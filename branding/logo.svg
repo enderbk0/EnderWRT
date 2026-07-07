@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100%" height="100%">
+  <defs>
+    <linearGradient id="shieldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#7c4dff;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#00e5ff;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="accentGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#ffffff;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#e0f7fa;stop-opacity:0.9" />
+    </linearGradient>
+  </defs>
+  <!-- Shield Outline Background -->
+  <path d="M50 5 L90 25 V55 C90 72 75 88 50 95 C25 88 10 72 10 55 V25 Z" fill="url(#shieldGrad)" filter="drop-shadow(0px 4px 6px rgba(0, 0, 0, 0.15))" />
+  
+  <!-- Stylized E for Ender -->
+  <path d="M35 32 H65 V40 H45 V48 H60 V56 H45 V64 H65 V72 H35 Z" fill="url(#accentGrad)" />
+  
+  <!-- Wireless Signal Waves at the Top -->
+  <path d="M38 24 A 16 16 0 0 1 62 24" stroke="#ffffff" stroke-width="3" fill="none" stroke-linecap="round" opacity="0.8" />
+  <path d="M43 19 A 24 24 0 0 1 57 19" stroke="#ffffff" stroke-width="3" fill="none" stroke-linecap="round" opacity="0.5" />
+</svg>

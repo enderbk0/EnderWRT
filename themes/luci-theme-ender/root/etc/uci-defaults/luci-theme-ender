@@ -1,0 +1,12 @@
+#!/bin/sh
+
+uci batch <<EOF
+	set luci.themes.Ender='/luci-static/ender'
+	set luci.main.mediaurlbase='/luci-static/ender'
+	commit luci
+EOF
+
+# Clear the cached index so that LuCI forces a menu refresh
+rm -f /var/luci-indexcache
+
+exit 0

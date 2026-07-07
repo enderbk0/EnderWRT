@@ -1,0 +1,16 @@
+# EnderWRT Git Ignore rules
+
+# Local build directories
+/openwrt-build/
+/publish_artifacts/
+
+# Antigravity agent files
+/antigravity.exe
+
+# OS and Editor configurations
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.suo
+*.user

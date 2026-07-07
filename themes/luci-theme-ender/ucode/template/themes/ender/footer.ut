@@ -1,0 +1,25 @@
+{#
+ Copyright 2026 EnderWRT Project
+ Licensed under the Apache License 2.0.
+-#}
+
+		{% if (!blank_page): %}
+		</div>
+		<footer class="app-footer">
+			<div class="container footer-content">
+				<span class="powered-by">
+					Powered by
+					<a href="https://github.com/openwrt/luci" target="_blank" rel="noreferrer">
+						{{ version.luciname }} ({{ version.luciversion }})</a>
+					/
+					<a href="{{ entityencode(version.disturl ?? '#', true) }}" target="_blank" rel="noreferrer">
+						{{ version.distname }} {{ version.distversion }}</a>
+				</span>
+				<span class="ender-credit">
+					EnderWRT &copy; 2026. Distributed under GPL.
+				</span>
+			</div>
+		</footer>
+		{% endif %}
+	</body>
+</html>

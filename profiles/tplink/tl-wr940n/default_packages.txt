@@ -1,0 +1,41 @@
+#
+# EnderWRT Package Manifest for TP-Link TL-WR940N
+# Target: ath79/tiny (4MB Flash / 32MB RAM)
+#
+
+# Essential Kernel & Hardware Drivers
+kmod-ath9k
+kmod-ath9k-common
+kmod-ath9k-eeprom-otp
+ath9k-firmware
+wpad-mini
+
+# Core Networking & Firewall
+dnsmasq
+firewall4
+nftables
+kmod-nft-offload
+ip
+
+# UI Layer (Optimized for size)
+luci-light
+luci-theme-ender
+
+# ==========================================
+# EXCLUDED PACKAGES (To fit within 4MB limit)
+# ==========================================
+-ip6tables
+-odhcpd-ipv6only
+-kmod-ipv6
+-luci-proto-ipv6
+-libustream-mbedtls
+-libustream-openssl
+-ca-bundle
+-ca-certificates
+-luci-app-opkg
+-ppp
+-ppp-mod-pppoe
+-kmod-ppp
+-kmod-usb-core
+-kmod-usb2
+-wpad-basic-wolfssl

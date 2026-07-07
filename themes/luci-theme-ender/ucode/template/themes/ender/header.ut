@@ -1,0 +1,68 @@
+{#
+ Copyright 2026 EnderWRT Project
+ Licensed under the Apache License 2.0.
+-#}
+
+{%
+	import { getuid, getspnam } from 'luci.core';
+
+	const boardinfo = ubus.call('system', 'board') ?? {};
+	const darkpref = (theme == 'ender-dark' ? 'true' : (theme == 'ender-light' ? 'false' : null));
+
+	http.prepare_content('text/html; charset=UTF-8');
+-%}
+
+<!DOCTYPE html>
+<html lang="{{ dispatcher.lang }}" {{ darkpref ? `data-darkmode="${darkpref}"` : '' }}>
+	<head>
+		<meta charset="utf-8">
+		<title>{{ striptags(`${boardinfo.hostname ?? 'EnderWRT'}${dispatched?.title ? ` | ${_(dispatched.title)}` : ''}`) }}</title>
+		
+		<!-- Google Fonts for Material Design 3 / Outfit Typography -->
+		<link rel="preconnect" href="https://fonts.googleapis.com">
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+		<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+		
+		{% if (!darkpref): %}
+			<script>
+				var mediaQuery = window.matchMedia('(prefers-color-scheme: dark)'),
+				    rootElement = document.querySelector(':root'),
+				    setDarkMode = function(match) { rootElement.setAttribute('data-darkmode', match.matches) };
+
+				mediaQuery.addEventListener('change', setDarkMode);
+				setDarkMode(mediaQuery);
+			</script>
+		{% endif %}
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta name="darkreader-lock">
+		<link rel="stylesheet" href="{{ media }}/cascade.css">
+		<link rel="stylesheet" media="only screen and (max-device-width: 854px)" href="{{ media }}/mobile.css" />
+		<link rel="icon" href="{{ media }}/favicon.ico" sizes="any">
+		<link rel="icon" href="{{ media }}/logo.svg" type="image/svg+xml">
+		{% if (node?.css): %}
+		<link rel="stylesheet" href="{{ resource }}/{{ node.css }}">
+		{% endif %}
+		{% if (css): %}
+		<style title="text/css">{{ css }}</style>
+		{% endif %}
+		<script src="{{ resource }}/cbi.js"></script>
+		<script src="{{ dispatcher.build_url('js/xhr.js') }}"></script>
+	</head>
+	<body class="lang_{{ dispatcher.lang }} {{ dispatcher.authuser ? 'logged-in' : '' }} {{ blank_page ? 'blank-page' : '' }}" data-page="{{ join('-', request) }}">
+		{% if (!blank_page): %}
+		<header class="app-bar">
+			<div class="container navbar">
+				<a class="brand" href="{{ dispatcher.build_url('admin') }}">
+					<img src="{{ media }}/logo.svg" alt="EnderWRT" class="logo-icon" />
+					<span class="logo-text">Ender<span class="logo-subtext">WRT</span></span>
+				</a>
+				<div class="sys-info">
+					<span class="hostname">{{ boardinfo.hostname ?? 'EnderWRT' }}</span>
+					{% if (dispatcher.authuser): %}
+						<a class="logout-btn" href="{{ dispatcher.build_url('admin/logout') }}">{{ _('Logout') }}</a>
+					{% endif %}
+				</div>
+			</div>
+		</header>
+		<div id="maincontent" class="container app-content">
+		{% endif %}

@@ -1,0 +1,70 @@
+/*
+ * EnderWRT LuCI Theme Mobile Stylesheet
+ * Responsive overrides for smaller screen widths
+ * Copyright (C) 2026 EnderWRT Project
+ */
+
+@media screen and (max-width: 854px) {
+    /* Layout Adjustments */
+    .app-content {
+        padding: 16px 12px;
+    }
+    
+    .app-bar {
+        padding: 10px 16px;
+    }
+    
+    .navbar {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+    
+    .sys-info {
+        width: 100%;
+        justify-content: space-between;
+        font-size: 0.8rem;
+    }
+    
+    /* Collapse CBI Value Grids */
+    .cbi-value {
+        grid-template-columns: 1fr;
+        gap: 8px;
+        padding: 12px 0;
+        align-items: flex-start;
+    }
+    
+    .cbi-value-title {
+        font-size: 0.9rem;
+    }
+    
+    .cbi-value-field, .cbi-input-text, .cbi-input-password, select, .cbi-input-select {
+        max-width: 100% !important;
+        width: 100%;
+    }
+    
+    /* Make complex data tables horizontally scrollable */
+    .cbi-section-table {
+        display: block;
+        width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+    
+    /* Tabs wrap nicely */
+    .tabs {
+        gap: 4px;
+    }
+    
+    .tabs li a {
+        padding: 6px 12px;
+        font-size: 0.8rem;
+    }
+    
+    /* Footer stacking */
+    .footer-content {
+        flex-direction: column;
+        text-align: center;
+        gap: 8px;
+    }
+}

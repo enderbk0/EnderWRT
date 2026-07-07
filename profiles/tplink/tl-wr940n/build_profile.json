@@ -1,0 +1,21 @@
+{
+  "device_id": "tplink_tl-wr940n-v6",
+  "vendor": "TP-Link",
+  "model": "TL-WR940N",
+  "revision": "v6",
+  "target": "ath79",
+  "subtarget": "tiny",
+  "flash_size_mb": 4,
+  "ram_size_mb": 32,
+  "features": {
+    "ipv4_only": true,
+    "luci": true,
+    "theme": "luci-theme-ender",
+    "wireless": "ath9k-light"
+  },
+  "outputs": {
+    "factory": "openwrt-ath79-tiny-tplink_tl-wr940n-v6-squashfs-factory.bin",
+    "sysupgrade": "openwrt-ath79-tiny-tplink_tl-wr940n-v6-squashfs-sysupgrade.bin",
+    "tftp_recovery": "wr940nv6_tp_recovery.bin"
+  }
+}

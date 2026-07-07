@@ -1,0 +1,160 @@
+name: EnderWRT CI/CD Firmware Builder
+
+on:
+  push:
+    branches:
+      - main
+    tags:
+      - 'v*'
+  pull_request:
+    branches:
+      - main
+  schedule:
+    - cron: '0 2 * * *' # Run nightly at 02:00 UTC
+  workflow_dispatch:
+    inputs:
+      release:
+        description: 'Publish GitHub Release'
+        required: true
+        type: boolean
+        default: false
+      debug:
+        description: 'Run build in debug mode'
+        required: false
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    name: Build EnderWRT (${{ matrix.device }})
+    runs-on: ubuntu-22.04
+    strategy:
+      fail-fast: false
+      matrix:
+        device: [x86_64, raspberrypi_4, tplink_tl-wr940n-v6]
+
+    steps:
+      - name: Checkout Source Code
+        uses: actions/checkout@v4
+
+      - name: Install System Prerequisites
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            build-essential clang flex bison g++ gawk gcc-multilib g++-multilib \
+            gettext git libncurses5-dev libssl-dev python3-setuptools \
+            rsync subversion swig unzip zlib1g-dev file wget curl \
+            libelf-dev ecj fastjar java-propose-classpath xsltproc
+
+      - name: Cache Build Environment
+        uses: actions/cache@v4
+        with:
+          path: |
+            openwrt-build/dl
+            openwrt-build/toolchain
+            openwrt-build/staging_dir/host
+            openwrt-build/staging_dir/toolchain-*
+          key: ${{ runner.os }}-enderwrt-${{ matrix.device }}-${{ hashFiles('configs/*.config', 'scripts/build.sh') }}
+          restore-keys: |
+            ${{ runner.os }}-enderwrt-${{ matrix.device }}-
+
+      - name: Setup Build Directory & Feeds
+        run: |
+          chmod +x scripts/build.sh
+          ./scripts/build.sh ${{ matrix.device }}
+
+      - name: Compile EnderWRT Firmware
+        run: |
+          cd openwrt-build
+          # Build using multithreading. Fall back to single-thread on error for verbose debugging.
+          if [ "${{ github.event.inputs.debug }}" = "true" ]; then
+            make -j1 V=s
+          else
+            make -j$(nproc) || make -j1 V=s
+          fi
+
+      - name: Organize Firmware Artifacts
+        run: |
+          mkdir -p publish_artifacts
+          if [ "${{ matrix.device }}" = "tplink_tl-wr940n-v6" ]; then
+            # Copy specific factory and sysupgrade images
+            cp openwrt-build/bin/targets/ath79/tiny/*factory*.bin publish_artifacts/openwrt-ath79-tiny-tplink_tl-wr940n-v6-squashfs-factory.bin || cp openwrt-build/bin/targets/ath79/tiny/*factory* publish_artifacts/ || true
+            cp openwrt-build/bin/targets/ath79/tiny/*sysupgrade*.bin publish_artifacts/openwrt-ath79-tiny-tplink_tl-wr940n-v6-squashfs-sysupgrade.bin || cp openwrt-build/bin/targets/ath79/tiny/*sysupgrade* publish_artifacts/ || true
+            # Generate the TFTP recovery image from the factory image
+            if [ -f publish_artifacts/openwrt-ath79-tiny-tplink_tl-wr940n-v6-squashfs-factory.bin ]; then
+              cp publish_artifacts/openwrt-ath79-tiny-tplink_tl-wr940n-v6-squashfs-factory.bin publish_artifacts/wr940nv6_tp_recovery.bin
+            fi
+          else
+            # Default x86_64 or raspberrypi_4 files
+            find openwrt-build/bin/targets/ -type f \
+              \( -name "*sysupgrade*" -o -name "*combined*" -o -name "*factory*" \) \
+              -exec cp {} publish_artifacts/ \;
+          fi
+          
+          # Generate SHA256 checksums and build info
+          cd publish_artifacts
+          sha256sum * > sha256sums.txt
+          echo "Device: ${{ matrix.device }}" > build_info.txt
+          echo "Build Date: $(date)" >> build_info.txt
+          echo "Git Commit: ${{ github.sha }}" >> build_info.txt
+          echo "Base: OpenWrt 23.05" >> build_info.txt
+          echo "Generated SHA256 Checksums:"
+          cat sha256sums.txt
+
+      - name: Upload Build Artifacts to GitHub Run
+        uses: actions/upload-artifact@v4
+        with:
+          name: EnderWRT-${{ matrix.device }}-firmware
+          path: publish_artifacts/*
+
+      - name: Determine Release Parameters
+        id: release_params
+        run: |
+          # Check if we should release: manual request, push tag, or nightly
+          if [ "${{ github.event.inputs.release }}" = "true" ] || [[ "${{ github.ref }}" == refs/tags/* ]] || [ "${{ github.event_name }}" = "schedule" ]; then
+            echo "should_release=true" >> $GITHUB_OUTPUT
+            if [[ "${{ github.ref }}" == refs/tags/* ]]; then
+              echo "tag_name=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
+              echo "release_title=EnderWRT Release ${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
+              echo "prerelease=false" >> $GITHUB_OUTPUT
+            elif [ "${{ github.event_name }}" = "schedule" ]; then
+              echo "tag_name=nightly" >> $GITHUB_OUTPUT
+              echo "release_title=EnderWRT Nightly Build" >> $GITHUB_OUTPUT
+              echo "prerelease=true" >> $GITHUB_OUTPUT
+            else
+              echo "tag_name=manual-build-${{ github.run_id }}" >> $GITHUB_OUTPUT
+              echo "release_title=Manual Build ${{ github.run_id }}" >> $GITHUB_OUTPUT
+              echo "prerelease=true" >> $GITHUB_OUTPUT
+            fi
+          else
+            echo "should_release=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Create GitHub Release and Upload Assets
+        if: steps.release_params.outputs.should_release == 'true'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.release_params.outputs.tag_name }}
+          name: ${{ steps.release_params.outputs.release_title }}
+          draft: false
+          prerelease: ${{ steps.release_params.outputs.prerelease }}
+          files: publish_artifacts/*
+          generate_release_notes: true
+          body: |
+            ## EnderWRT Firmware Release
+            
+            This is an automated build of EnderWRT, based on OpenWrt and licensed under the GPL.
+            
+            ### Device Targets Included
+            - **${{ matrix.device }}**
+            
+            ### Checksums
+            Please verify the integrity of the downloaded files using the SHA256 checksums provided in the `sha256sums.txt` attachment.
+            
+            ---
+            *Built automatically by GitHub Actions workflow.*
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

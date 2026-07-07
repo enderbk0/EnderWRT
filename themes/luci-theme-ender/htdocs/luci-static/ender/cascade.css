@@ -1,0 +1,519 @@
+/*
+ * EnderWRT LuCI Theme Stylesheet
+ * Inspired by Material Design 3 / Material You
+ * Copyright (C) 2026 EnderWRT Project
+ */
+
+:root {
+    /* Material Design 3 Light Palette Tokens */
+    --m3-sys-light-primary: #6750A4;
+    --m3-sys-light-on-primary: #FFFFFF;
+    --m3-sys-light-primary-container: #EADDFF;
+    --m3-sys-light-on-primary-container: #21005D;
+    --m3-sys-light-secondary: #625B71;
+    --m3-sys-light-on-secondary: #FFFFFF;
+    --m3-sys-light-secondary-container: #E8DEF8;
+    --m3-sys-light-on-secondary-container: #1D192B;
+    --m3-sys-light-tertiary: #7D5260;
+    --m3-sys-light-on-tertiary: #FFFFFF;
+    --m3-sys-light-tertiary-container: #FFD8E4;
+    --m3-sys-light-on-tertiary-container: #31111D;
+    --m3-sys-light-error: #B3261E;
+    --m3-sys-light-on-error: #FFFFFF;
+    --m3-sys-light-error-container: #F9DEDC;
+    --m3-sys-light-on-error-container: #410E0B;
+    --m3-sys-light-background: #FEF7FF;
+    --m3-sys-light-on-background: #1D1B20;
+    --m3-sys-light-surface: #FAF8FD;
+    --m3-sys-light-on-surface: #1D1B20;
+    --m3-sys-light-surface-variant: #E7E0EC;
+    --m3-sys-light-on-surface-variant: #49454F;
+    --m3-sys-light-outline: #79747E;
+    --m3-sys-light-outline-variant: #CAC4D0;
+    --m3-sys-light-shadow: #000000;
+    
+    /* Active Color mappings */
+    --primary: var(--m3-sys-light-primary);
+    --on-primary: var(--m3-sys-light-on-primary);
+    --primary-container: var(--m3-sys-light-primary-container);
+    --on-primary-container: var(--m3-sys-light-on-primary-container);
+    --secondary-container: var(--m3-sys-light-secondary-container);
+    --on-secondary-container: var(--m3-sys-light-on-secondary-container);
+    --background: var(--m3-sys-light-background);
+    --on-background: var(--m3-sys-light-on-background);
+    --surface: var(--m3-sys-light-surface);
+    --on-surface: var(--m3-sys-light-on-surface);
+    --surface-variant: var(--m3-sys-light-surface-variant);
+    --on-surface-variant: var(--m3-sys-light-on-surface-variant);
+    --outline: var(--m3-sys-light-outline);
+    --outline-variant: var(--m3-sys-light-outline-variant);
+    --error: var(--m3-sys-light-error);
+    --error-container: var(--m3-sys-light-error-container);
+    --on-error-container: var(--m3-sys-light-on-error-container);
+    
+    /* Layout styling tokens */
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
+    --radius-xl: 28px;
+    --font-sans: 'Outfit', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    
+    --transition-fast: 0.12s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-normal: 0.22s cubic-bezier(0.2, 0, 0, 1);
+}
+
+/* System Dark Mode & Explicit Dark Mode Settings override */
+@media (prefers-color-scheme: dark) {
+    :root {
+        --m3-sys-dark-primary: #D0BCFF;
+        --m3-sys-dark-on-primary: #381E72;
+        --m3-sys-dark-primary-container: #4F378B;
+        --m3-sys-dark-on-primary-container: #EADDFF;
+        --m3-sys-dark-secondary: #CCC2DC;
+        --m3-sys-dark-on-secondary: #332D41;
+        --m3-sys-dark-secondary-container: #4A4458;
+        --m3-sys-dark-on-secondary-container: #E8DEF8;
+        --m3-sys-dark-tertiary: #EFB8C8;
+        --m3-sys-dark-on-tertiary: #492532;
+        --m3-sys-dark-tertiary-container: #633B48;
+        --m3-sys-dark-on-tertiary-container: #FFD8E4;
+        --m3-sys-dark-error: #F2B8B5;
+        --m3-sys-dark-on-error: #601410;
+        --m3-sys-dark-error-container: #8C1D18;
+        --m3-sys-dark-on-error-container: #F9DEDC;
+        --m3-sys-dark-background: #141218;
+        --m3-sys-dark-on-background: #E6E1E5;
+        --m3-sys-dark-surface: #1C1B1F;
+        --m3-sys-dark-on-surface: #E6E1E5;
+        --m3-sys-dark-surface-variant: #49454F;
+        --m3-sys-dark-on-surface-variant: #CAC4D0;
+        --m3-sys-dark-outline: #938F99;
+        --m3-sys-dark-outline-variant: #49454F;
+        
+        --primary: var(--m3-sys-dark-primary);
+        --on-primary: var(--m3-sys-dark-on-primary);
+        --primary-container: var(--m3-sys-dark-primary-container);
+        --on-primary-container: var(--m3-sys-dark-on-primary-container);
+        --secondary-container: var(--m3-sys-dark-secondary-container);
+        --on-secondary-container: var(--m3-sys-dark-on-secondary-container);
+        --background: var(--m3-sys-dark-background);
+        --on-background: var(--m3-sys-dark-on-background);
+        --surface: var(--m3-sys-dark-surface);
+        --on-surface: var(--m3-sys-dark-on-surface);
+        --surface-variant: var(--m3-sys-dark-surface-variant);
+        --on-surface-variant: var(--m3-sys-dark-on-surface-variant);
+        --outline: var(--m3-sys-dark-outline);
+        --outline-variant: var(--m3-sys-dark-outline-variant);
+        --error: var(--m3-sys-dark-error);
+        --error-container: var(--m3-sys-dark-error-container);
+        --on-error-container: var(--m3-sys-dark-on-error-container);
+    }
+}
+
+html[data-darkmode="true"] {
+    --primary: var(--m3-sys-dark-primary);
+    --on-primary: var(--m3-sys-dark-on-primary);
+    --primary-container: var(--m3-sys-dark-primary-container);
+    --on-primary-container: var(--m3-sys-dark-on-primary-container);
+    --secondary-container: var(--m3-sys-dark-secondary-container);
+    --on-secondary-container: var(--m3-sys-dark-on-secondary-container);
+    --background: var(--m3-sys-dark-background);
+    --on-background: var(--m3-sys-dark-on-background);
+    --surface: var(--m3-sys-dark-surface);
+    --on-surface: var(--m3-sys-dark-on-surface);
+    --surface-variant: var(--m3-sys-dark-surface-variant);
+    --on-surface-variant: var(--m3-sys-dark-on-surface-variant);
+    --outline: var(--m3-sys-dark-outline);
+    --outline-variant: var(--m3-sys-dark-outline-variant);
+    --error: var(--m3-sys-dark-error);
+    --error-container: var(--m3-sys-dark-error-container);
+    --on-error-container: var(--m3-sys-dark-on-error-container);
+}
+
+html[data-darkmode="false"] {
+    --primary: var(--m3-sys-light-primary);
+    --on-primary: var(--m3-sys-light-on-primary);
+    --primary-container: var(--m3-sys-light-primary-container);
+    --on-primary-container: var(--m3-sys-light-on-primary-container);
+    --secondary-container: var(--m3-sys-light-secondary-container);
+    --on-secondary-container: var(--m3-sys-light-on-secondary-container);
+    --background: var(--m3-sys-light-background);
+    --on-background: var(--m3-sys-light-on-background);
+    --surface: var(--m3-sys-light-surface);
+    --on-surface: var(--m3-sys-light-on-surface);
+    --surface-variant: var(--m3-sys-light-surface-variant);
+    --on-surface-variant: var(--m3-sys-light-on-surface-variant);
+    --outline: var(--m3-sys-light-outline);
+    --outline-variant: var(--m3-sys-light-outline-variant);
+    --error: var(--m3-sys-light-error);
+    --error-container: var(--m3-sys-light-error-container);
+    --on-error-container: var(--m3-sys-light-on-error-container);
+}
+
+/* Global Reset */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: var(--font-sans);
+    background-color: var(--background);
+    color: var(--on-background);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    transition: background-color var(--transition-normal), color var(--transition-normal);
+}
+
+a {
+    color: var(--primary);
+    text-decoration: none;
+    transition: color var(--transition-fast);
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+/* App Header (App Bar) */
+.app-bar {
+    background-color: rgba(var(--background), 0.7);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--outline-variant);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    padding: 12px 24px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--on-background);
+    text-decoration: none;
+}
+
+.brand:hover {
+    text-decoration: none;
+}
+
+.logo-icon {
+    width: 36px;
+    height: 36px;
+}
+
+.logo-text {
+    background: linear-gradient(135deg, var(--primary) 0%, #00e5ff 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.logo-subtext {
+    font-weight: 300;
+}
+
+.sys-info {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.hostname {
+    background-color: var(--primary-container);
+    color: var(--on-primary-container);
+    padding: 4px 12px;
+    border-radius: var(--radius-sm);
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.logout-btn {
+    background-color: var(--surface-variant);
+    color: var(--on-surface-variant);
+    padding: 6px 14px;
+    border-radius: var(--radius-xl);
+    font-size: 0.85rem;
+    font-weight: 500;
+    transition: background-color var(--transition-fast);
+}
+
+.logout-btn:hover {
+    background-color: var(--outline-variant);
+    text-decoration: none;
+}
+
+/* Layout Content Wrapper */
+.app-content {
+    padding: 32px 24px;
+    min-height: calc(100vh - 140px);
+}
+
+/* LuCI Map and Section Cards */
+.cbi-map, .cbi-section {
+    background-color: var(--surface);
+    border: 1px solid var(--outline-variant);
+    border-radius: var(--radius-lg);
+    padding: 24px;
+    margin-bottom: 24px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
+    transition: transform var(--transition-normal), box-shadow var(--transition-normal);
+}
+
+.cbi-map:hover, .cbi-section:hover {
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.04);
+}
+
+h2, h3, .cbi-map-title, .cbi-section-title {
+    font-size: 1.35rem;
+    font-weight: 600;
+    margin-bottom: 12px;
+    color: var(--primary);
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.cbi-map-descr, .cbi-section-descr {
+    font-size: 0.9rem;
+    color: var(--on-surface-variant);
+    margin-bottom: 20px;
+}
+
+/* Tabs & Tab menus */
+.tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 20px;
+    list-style: none;
+    border-bottom: 1px solid var(--outline-variant);
+    padding-bottom: 8px;
+}
+
+.tabs li a {
+    display: inline-block;
+    padding: 8px 16px;
+    border-radius: var(--radius-xl);
+    background-color: var(--surface-variant);
+    color: var(--on-surface-variant);
+    font-weight: 500;
+    font-size: 0.9rem;
+    transition: all var(--transition-fast);
+}
+
+.tabs li a:hover {
+    background-color: var(--outline-variant);
+    text-decoration: none;
+}
+
+.tabs li.active a {
+    background-color: var(--primary-container);
+    color: var(--on-primary-container);
+    font-weight: 600;
+}
+
+/* CBI Form Values */
+.cbi-value {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: 16px;
+    padding: 14px 0;
+    border-bottom: 1px dashed var(--outline-variant);
+    align-items: center;
+}
+
+.cbi-value:last-child {
+    border-bottom: none;
+}
+
+.cbi-value-title {
+    font-weight: 500;
+    color: var(--on-surface);
+    font-size: 0.95rem;
+}
+
+.cbi-value-field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.cbi-value-description {
+    font-size: 0.82rem;
+    color: var(--on-surface-variant);
+    margin-top: 4px;
+}
+
+/* Form Inputs, Selects, Buttons */
+.cbi-input-text, .cbi-input-password, select, .cbi-input-select {
+    width: 100%;
+    max-width: 400px;
+    font-family: var(--font-sans);
+    font-size: 0.9rem;
+    padding: 10px 14px;
+    background-color: var(--surface);
+    border: 1px solid var(--outline);
+    border-radius: var(--radius-sm);
+    color: var(--on-surface);
+    outline: none;
+    transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.cbi-input-text:focus, .cbi-input-password:focus, select:focus, .cbi-input-select:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px var(--primary-container);
+}
+
+/* Buttons */
+.cbi-button {
+    font-family: var(--font-sans);
+    font-size: 0.9rem;
+    font-weight: 600;
+    padding: 10px 24px;
+    border-radius: var(--radius-xl);
+    border: none;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.cbi-button-action, .cbi-button-apply, .cbi-button-save {
+    background-color: var(--primary);
+    color: var(--on-primary);
+}
+
+.cbi-button-action:hover, .cbi-button-apply:hover, .cbi-button-save:hover {
+    background-color: var(--on-primary-container);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+    transform: translateY(-1px);
+}
+
+.cbi-button-reset, .cbi-button-neutral {
+    background-color: var(--secondary-container);
+    color: var(--on-secondary-container);
+}
+
+.cbi-button-reset:hover, .cbi-button-neutral:hover {
+    background-color: var(--outline-variant);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.08);
+    transform: translateY(-1px);
+}
+
+/* CBI Tables (Interface Lists, DHCP Leases, etc.) */
+.cbi-section-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 16px;
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    border: 1px solid var(--outline-variant);
+}
+
+.cbi-section-table-thr {
+    background-color: var(--surface-variant);
+}
+
+.cbi-section-table-th {
+    padding: 12px 16px;
+    font-weight: 600;
+    text-align: left;
+    font-size: 0.9rem;
+    color: var(--on-surface-variant);
+}
+
+.cbi-section-table-row {
+    background-color: var(--surface);
+    border-bottom: 1px solid var(--outline-variant);
+    transition: background-color var(--transition-fast);
+}
+
+.cbi-section-table-row:hover {
+    background-color: var(--primary-container);
+    opacity: 0.9;
+}
+
+.cbi-section-table-cell {
+    padding: 12px 16px;
+    font-size: 0.88rem;
+    color: var(--on-surface);
+}
+
+/* Alert Messages (Status banner notifications) */
+.alert-message {
+    padding: 14px 20px;
+    border-radius: var(--radius-md);
+    margin-bottom: 20px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border-left: 5px solid transparent;
+}
+
+.alert-message.success {
+    background-color: #E8F5E9;
+    color: #2E7D32;
+    border-left-color: #4CAF50;
+}
+
+.alert-message.warning {
+    background-color: #FFF3E0;
+    color: #E65100;
+    border-left-color: #FF9800;
+}
+
+.alert-message.error {
+    background-color: var(--error-container);
+    color: var(--on-error-container);
+    border-left-color: var(--error);
+}
+
+.alert-message.info {
+    background-color: var(--primary-container);
+    color: var(--on-primary-container);
+    border-left-color: var(--primary);
+}
+
+/* App Footer */
+.app-footer {
+    border-top: 1px solid var(--outline-variant);
+    padding: 24px;
+    background-color: var(--surface);
+    color: var(--on-surface-variant);
+    font-size: 0.82rem;
+    margin-top: 40px;
+}
+
+.footer-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.ender-credit {
+    font-weight: 600;
+}

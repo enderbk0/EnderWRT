@@ -1,0 +1,17 @@
+#!/bin/sh
+#
+# EnderWRT First Boot Configuration Overlay
+# Copyright (C) 2026 EnderWRT Project
+#
+
+# 1. Update System Hostname
+uci set system.@system[0].hostname='EnderWRT'
+uci commit system
+/etc/init.d/system reload
+
+# 2. Register and Enforce Theme
+uci set luci.themes.Ender='/luci-static/ender'
+uci set luci.main.mediaurlbase='/luci-static/ender'
+uci commit luci
+
+exit 0
