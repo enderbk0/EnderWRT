@@ -34,7 +34,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        device: [x86_64, raspberrypi_4, tplink_tl-wr940n-v6]
+        device: [tplink_tl-wr940n-v6]
 
     steps:
       - name: Checkout Source Code
