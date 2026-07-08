@@ -43,8 +43,6 @@ jobs:
       - name: Interactive SSH Debug Session (tmate)
         uses: mxschmitt/action-tmate@v3
         if: ${{ github.event.inputs.debug == 'true' }}
-        with:
-          limit-access-to-actor: true
 
       - name: Install System Prerequisites
         run: |
@@ -83,8 +81,6 @@ jobs:
       - name: Hold SSH Debug Session on Failure (tmate)
         uses: mxschmitt/action-tmate@v3
         if: ${{ failure() }}
-        with:
-          limit-access-to-actor: true
 
       - name: Organize Firmware Artifacts
         run: |
