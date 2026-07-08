@@ -1,107 +1,110 @@
-# 🛡️ EnderWRT - Custom OpenWrt-Based Router Firmware Distribution
+# 🛡️ EnderWRT
 
-EnderWRT is an open-source, highly polished custom router firmware distribution based on [OpenWrt](https://openwrt.org/) and licensed under the GNU General Public License (GPL).
+> A high-performance, size-optimized firmware distribution based on OpenWrt 23.05, tailored specifically for the 4MB Flash / 32MB RAM **TP-Link TL-WR940N v5/v6**.
 
-EnderWRT combines OpenWrt's rock-solid stability and network performance with modern visual elegance (Material Design 3), simplified user onboarding, and a fully automated GitHub-first compilation pipeline.
+[![Build Status](https://img.shields.io/github/actions/workflow/status/enderbk0/EnderWRT/build.yml?branch=main&style=flat-square&logo=github&label=Build)](https://github.com/enderbk0/EnderWRT/actions)
+[![Platform](https://img.shields.io/badge/Platform-OpenWrt%2023.05-orange?style=flat-square)](https://openwrt.org/)
+[![Target](https://img.shields.io/badge/Target-TL--WR940N%20v5%2Fv6-purple?style=flat-square)](#)
+[![License](https://img.shields.io/badge/License-GPL--3.0-blue.svg?style=flat-square)](LICENSE)
+
+EnderWRT is designed to pack modern interface styling and essential router services into extremely resource-constrained MIPS router hardware. It replaces OpenWrt's bulky defaults with custom-tailored configuration seeds and size-optimized profiles, ensuring stable performance on 4/32 devices.
 
 ---
 
-## 🎨 Visual Aesthetics & Theme
+## 🎨 Design System & Theme
 
-EnderWRT comes packaged with `luci-theme-ender`, a bespoke theme for the OpenWrt LuCI web interface inspired by **Material Design 3 (Material You)**.
+EnderWRT is bundled with `luci-theme-ender`, a responsive LuCI web interface design inspired by **Material Design 3 (Material You)**.
 
-*   **Responsive Layout**: Optimized for desktop, tablet, and mobile screens.
-*   **Dynamic Dark Mode**: Automatic theme shifting matching browser preferences (`prefers-color-scheme`) and supporting manual overrides.
-*   **Material You Color Palettes**: Clean violet-to-teal gradients, pill-shaped buttons, and rounded cards.
-*   **Inter/Outfit Typography**: Modern typography replace generic browser sans-serif fonts.
+*   **Responsive Framework**: Designed from the ground up for mobile, tablet, and desktop viewports.
+*   **Automatic Dark Mode**: Built-in styling adapting to system `prefers-color-scheme` with manual toggle supports.
+*   **Clean Geometry**: Modern card-based forms, pill-shaped menus, and custom Outfit typography.
+*   **Ultralight Weight**: Static assets and SVG symbols are minified, taking up less than **30 KB** of physical flash.
+
+---
+
+## ⚡ Feature Matrix (IPv4 Only)
+
+To fit within the **3.75 MB firmware partition limit**, the default build strips heavy networking protocols (like IPv6 and PPPoE/PPP) to preserve space for core functionalities:
+
+*   **Wi-Fi Modes**: Wireless Access Point (AP), Client Mode, Client Bridge, Repeater, Repeater Bridge, and WDS.
+*   **Core Services**: DHCP Server, DNS Forwarder (dnsmasq), and Firewall/NAT (nftables).
+*   **Traffic Management**: Lightweight QoS traffic shaping.
+*   **Built-in Captive Portal**: Ready-to-go splash landing overlays.
+
+*Note: USB drivers, WireGuard, OpenVPN, Samba, and SQM are disabled by default but can be compiled in if flash expansion modifications (modding to 8MB/16MB chips) are made.*
 
 ---
 
 ## 📂 Repository Layout
 
-EnderWRT uses a modular layout to keep customizations distinct from core OpenWrt files, making upstream rebases straightforward:
+EnderWRT maintains a **patchless, overlay-based architecture** to keep upstream rebasing seamless:
 
 ```
 ├── .github/workflows/
-│   └── build.yml               # CI/CD automated build matrix (x86_64, RPi 4, TL-WR940N)
+│   └── build.yml               # CI/CD Matrix Builder (Builds TL-WR940N)
 ├── branding/
-│   ├── logo.svg                # Vector SVG logo for branding
-│   ├── boot_artwork.jpg        # Holographic splash artwork
-│   └── banner.txt              # Custom SSH terminal ASCII banner
+│   ├── logo.svg                # Vector SVG logo
+│   ├── boot_artwork.jpg        # Holographic gateway splash art
+│   └── banner.txt              # ASCII terminal banner template
 ├── configs/
-│   ├── x86_64.config           # Target seed configuration for x86_64
-│   └── raspberrypi_4.config    # Target seed configuration for Raspberry Pi 4
+│   ├── x86_64.config           # Configuration seed for x86 targets
+│   └── raspberrypi_4.config    # Configuration seed for RPi 4 targets
 ├── docs/
-│   ├── roadmap.md              # Feature specification & development timeline
-│   ├── maintenance.md          # Guide to rebasing, patching, & CVE audits
-│   └── customization_rationale.md # Rationale behind code overlays & patchless architecture
-├── files/                      # System configuration files overlay
+│   ├── roadmap.md              # Detailed future phase milestones
+│   ├── maintenance.md          # Rebase protocols & conflict resolutions
+│   └── customization_rationale.md # Details on overlay architecture (why we don't patch)
+├── files/                      # Root filesystem custom file overlay
 │   └── etc/
-│       ├── banner              # Custom SSH terminal banner
+│       ├── banner              # Live SSH terminal banner
 │       └── uci-defaults/
-│           └── 99-enderwrt-defaults # First-boot hostname and theme configuration
-├── packages/                   # Custom packages / feed overlays
-├── patches/                    # Custom patches (empty by default to minimize maintenance)
-├── profiles/                   # Build profiles for target device profiles
-│   └── tplink/tl-wr940n/       # Optimized configurations and recovery manuals
-├── scripts/
-│   └── build.sh                # Automation script to prepare and expand OpenWrt buildroot
+│           └── 99-enderwrt-defaults # First-boot hostname and theme configurator
+├── profiles/
+│   └── tplink/tl-wr940n/
+│       ├── device.config       # Ultra-aggressive size-optimization configs
+│       ├── default_packages.txt # Manifest of packages included/excluded
+│       ├── build_profile.json  # Compilation targets metadata
+│       ├── recovery.md         # TFTP recovery manual
+│       └── image_generation.md # Flash partition offsets documentation
 └── themes/
-    └── luci-theme-ender/       # Custom LuCI theme package files (Makefile, static CSS/SVG, templates)
+    └── luci-theme-ender/       # Custom Material Design 3 theme package
 ```
 
 ---
 
-## 🛠️ Building EnderWRT Locally
+## 🛠️ Local Build Instructions
 
-To build EnderWRT locally, you will need a Linux machine (Ubuntu 22.04 LTS recommended) with standard OpenWrt build dependencies installed.
+Requires a Linux compilation environment (Ubuntu 22.04 LTS recommended) with standard OpenWrt build-essential utilities installed.
 
-### 1. Prepare and Inject Environment
-Run the setup script specifying your target device (`x86_64`, `raspberrypi_4`, or `tplink_tl-wr940n-v6`):
+### 1. Initialize Build Tree
+Run the setup script specifying your device target:
 ```bash
 ./scripts/build.sh tplink_tl-wr940n-v6
 ```
-This script will:
-*   Clone OpenWrt `v23.05.3` (stable, reproducible).
-*   Download and update feeds.
-*   Inject the `luci-theme-ender` package.
-*   Apply branding patches.
-*   Load the seed target configurations.
-*   Run `make defconfig` to expand configurations.
-*   Pre-download source tarballs.
+This script pulls OpenWrt `v23.05.3` (stable/reproducible), installs standard package feeds, links the `luci-theme-ender` package, and injects the `/files` system overlay.
 
-### 2. Compile Firmware
-Navigate into the compiled buildroot folder and run compilation:
+### 2. Compile Target
+Navigate into the build tree and run compilation:
 ```bash
 cd openwrt-build
 make -j$(nproc) V=s
 ```
-Compiled images will be stored under `bin/targets/`.
+Output images (Factory, Sysupgrade, and TFTP recovery files) will be generated under `bin/targets/ath79/tiny/`.
 
 ---
 
-## 🚀 CI/CD GitHub Actions Pipeline
+## 🚑 TFTP Failsafe Recovery
 
-EnderWRT features a fully automated build and release system:
+If the router bootloops or gets corrupted, U-Boot can restore it via TFTP:
 
-*   **Nightly Builds**: Built automatically every night at `02:00 UTC`.
-*   **Manual Trigger**: Kickoff custom builds via `workflow_dispatch` with options to create draft/pre-releases.
-*   **Automatic Checksums**: Generates SHA256 hashes of all firmware builds.
-*   **Auto Release Note Generator**: Publishes firmware binaries directly to GitHub Releases with changelogs.
-
----
-
-## 🗺️ Roadmap & Futures
-*   **Setup Wizard**: Easy step-by-step WAN/LAN/Wi-Fi configuration on first boot.
-*   **OTA Package Feed**: Over-the-air cryptographically signed package repository.
-*   **Advanced Repeater Config**: Simple UI to scan and auto-failover connection bridges.
-*   Read more in [docs/roadmap.md](file:///C:/Users/EnderBK/Downloads/agy_cli_windows_x64/docs/roadmap.md).
+1.  Configure your PC's Ethernet network adapter to static IP **`192.168.0.66`** (Subnet `255.255.255.0`).
+2.  Rename the compiled factory image to **`wr940nv6_tp_recovery.bin`** and place it in your local TFTP root folder.
+3.  Connect your PC to one of the yellow **LAN ports** on the router.
+4.  With the router powered off, press and **hold the Reset button**.
+5.  Power on the router while keeping the Reset button held for 7-10 seconds until diagnostic LEDs flash rapidly. The router will download and flash the recovery file automatically.
 
 ---
 
-## ⚖️ GPL Compliance & License
+## ⚖️ GPL & Upstream Compliance
 
-EnderWRT complies with the GNU General Public License (GPL).
-*   All third-party OpenWrt code retains their original copyrights.
-*   All modifications, patches, scripts, and theme sources are published openly under the same license terms.
-*   Attribution to the upstream OpenWrt project must remain intact in all user-facing interfaces (e.g., LuCI login screen, footer credits, and SSH banner).
+*   **Attribution**: EnderWRT maintains clear links to upstream OpenWrt within all user-facing interfaces (LuCI login panels, footer details, and SSH banners).
+*   **GPL Compliance**: In compliance with the GPL license, all customization scripts, configurations, and packages are fully open-sourced in this repository.
