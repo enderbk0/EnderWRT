@@ -92,10 +92,17 @@ if [ -f "$CONFIG_FILE" ]; then
     echo "[-] Copying configurations for ${TARGET_DEVICE} from ${CONFIG_FILE}..."
     cp "$CONFIG_FILE" .config
     # Append theme configuration to ensure it's selected
-    cat <<EOF >> .config
+    if [ "$TARGET_DEVICE" = "tplink_tl-wr940n-v6" ]; then
+        cat <<EOF >> .config
+CONFIG_PACKAGE_luci-theme-ender=y
+CONFIG_PACKAGE_luci-light=y
+EOF
+    else
+        cat <<EOF >> .config
 CONFIG_PACKAGE_luci-theme-ender=y
 CONFIG_PACKAGE_luci=y
 EOF
+    fi
 else
     echo "[!] Warning: Configuration file $CONFIG_FILE not found! Generating default."
     cat <<EOF > .config

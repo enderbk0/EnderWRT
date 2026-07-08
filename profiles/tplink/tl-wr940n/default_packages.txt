@@ -28,6 +28,7 @@ luci-theme-ender
 -odhcpd-ipv6only
 -kmod-ipv6
 -luci-proto-ipv6
+-luci-theme-bootstrap
 -libustream-mbedtls
 -libustream-openssl
 -ca-bundle
