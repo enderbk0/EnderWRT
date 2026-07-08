@@ -54,7 +54,6 @@ jobs:
         with:
           path: |
             openwrt-build/dl
-            openwrt-build/staging_dir
           key: ${{ runner.os }}-enderwrt-${{ matrix.device }}-${{ hashFiles('configs/*.config', 'scripts/build.sh') }}
           restore-keys: |
             ${{ runner.os }}-enderwrt-${{ matrix.device }}-
