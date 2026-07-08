@@ -25,7 +25,7 @@ if [ ! -f "$BUILD_DIR/scripts/feeds" ]; then
     ENDER_CACHE_TEMP="/tmp/ender_cache_preserve"
     mkdir -p "$ENDER_CACHE_TEMP"
     
-    for dir in dl toolchain staging_dir; do
+    for dir in dl staging_dir; do
         if [ -d "$BUILD_DIR/$dir" ]; then
             echo "[*] Preserving cached $dir..."
             mv "$BUILD_DIR/$dir" "$ENDER_CACHE_TEMP/"
@@ -40,7 +40,7 @@ if [ ! -f "$BUILD_DIR/scripts/feeds" ]; then
     git clone --depth 1 -b "$OPENWRT_VERSION" "$OPENWRT_REPO" "$BUILD_DIR"
     
     # Restore cached directories
-    for dir in dl toolchain staging_dir; do
+    for dir in dl staging_dir; do
         if [ -d "$ENDER_CACHE_TEMP/$dir" ]; then
             echo "[*] Restoring cached $dir..."
             mkdir -p "$BUILD_DIR"
