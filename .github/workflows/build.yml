@@ -73,6 +73,12 @@ jobs:
             make -j$(nproc) || make -j1 V=s
           fi
 
+      - name: SSH Debugging Session (tmate)
+        uses: mxschmitt/action-tmate@v3
+        if: ${{ github.event.inputs.debug == 'true' || failure() }}
+        with:
+          limit-access-to-actor: true
+
       - name: Organize Firmware Artifacts
         run: |
           mkdir -p publish_artifacts
