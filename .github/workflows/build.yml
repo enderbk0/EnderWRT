@@ -40,11 +40,10 @@ jobs:
       - name: Checkout Source Code
         uses: actions/checkout@v4
 
-      - name: Start Background SSH Debug Session (tmate)
+      - name: Interactive SSH Debug Session (tmate)
         uses: mxschmitt/action-tmate@v3
         if: ${{ github.event.inputs.debug == 'true' }}
         with:
-          detached: true
           limit-access-to-actor: true
 
       - name: Install System Prerequisites
@@ -71,6 +70,7 @@ jobs:
           ./scripts/build.sh ${{ matrix.device }}
 
       - name: Compile EnderWRT Firmware
+        if: ${{ github.event.inputs.debug != 'true' }}
         run: |
           cd openwrt-build
           # Build using multithreading. Fall back to single-thread on error for verbose debugging.
