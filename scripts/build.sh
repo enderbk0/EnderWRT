@@ -17,12 +17,39 @@ echo "  EnderWRT Firmware Build Automator  "
 echo "  Target: ${TARGET_DEVICE} (${OPENWRT_VERSION})"
 echo "============================================="
 
-# 1. Clone OpenWrt repository if it doesn't exist
-if [ ! -d "$BUILD_DIR" ]; then
+# 1. Clone OpenWrt repository if it doesn't exist or is incomplete
+if [ ! -f "$BUILD_DIR/scripts/feeds" ]; then
+    echo "[-] OpenWrt source tree not found or incomplete. Setting up repository..."
+    
+    # Temporarily preserve cached directories
+    ENDER_CACHE_TEMP="/tmp/ender_cache_preserve"
+    mkdir -p "$ENDER_CACHE_TEMP"
+    
+    for dir in dl toolchain staging_dir; do
+        if [ -d "$BUILD_DIR/$dir" ]; then
+            echo "[*] Preserving cached $dir..."
+            mv "$BUILD_DIR/$dir" "$ENDER_CACHE_TEMP/"
+        fi
+    done
+    
+    # Remove the incomplete build directory
+    rm -rf "$BUILD_DIR"
+    
+    # Clone OpenWrt source tree
     echo "[-] Cloning OpenWrt source tree..."
     git clone --depth 1 -b "$OPENWRT_VERSION" "$OPENWRT_REPO" "$BUILD_DIR"
+    
+    # Restore cached directories
+    for dir in dl toolchain staging_dir; do
+        if [ -d "$ENDER_CACHE_TEMP/$dir" ]; then
+            echo "[*] Restoring cached $dir..."
+            mkdir -p "$BUILD_DIR"
+            mv "$ENDER_CACHE_TEMP/$dir" "$BUILD_DIR/"
+        fi
+    done
+    rm -rf "$ENDER_CACHE_TEMP"
 else
-    echo "[*] OpenWrt source tree already exists. Skipping clone."
+    echo "[*] OpenWrt source tree already exists and is valid. Skipping clone."
 fi
 
 # Save the absolute root path of EnderWRT repository
