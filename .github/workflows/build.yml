@@ -9,10 +9,10 @@ on:
         type: boolean
         default: false
       debug:
-        description: 'Run build in debug mode'
+        description: 'Run build in debug mode (Interactive SSH via tmate)'
         required: false
         type: boolean
-        default: true
+        default: false
 
 permissions:
   contents: write
