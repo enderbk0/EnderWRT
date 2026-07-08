@@ -94,13 +94,19 @@ if [ -f "$CONFIG_FILE" ]; then
     # Append theme configuration to ensure it's selected
     if [ "$TARGET_DEVICE" = "tplink_tl-wr940n-v6" ]; then
         cat <<EOF >> .config
+CONFIG_PACKAGE_luci=n
+CONFIG_PACKAGE_luci-light=n
+CONFIG_PACKAGE_luci-base=y
+CONFIG_PACKAGE_luci-mod-admin-full=y
+CONFIG_PACKAGE_uhttpd=y
+CONFIG_PACKAGE_uhttpd-mod-ubus=y
 CONFIG_PACKAGE_luci-theme-ender=y
-CONFIG_PACKAGE_luci=y
 EOF
     else
         cat <<EOF >> .config
 CONFIG_PACKAGE_luci-theme-ender=y
-CONFIG_PACKAGE_luci=y
+CONFIG_PACKAGE_luci-base=y
+CONFIG_PACKAGE_uhttpd=y
 EOF
     fi
 else
