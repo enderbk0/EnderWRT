@@ -79,30 +79,53 @@ jobs:
       - name: Organize Firmware Artifacts
         run: |
           mkdir -p publish_artifacts
+          
+          # Verbose debug listing to verify compiled paths
+          echo "=== Debug: Listing all files in openwrt-build/bin/ ==="
+          find openwrt-build/bin/ -type f || true
+          
           if [ "${{ matrix.device }}" = "tplink_tl-wr940n-v6" ]; then
-            # Copy specific factory and sysupgrade images
-            cp openwrt-build/bin/targets/ath79/tiny/*factory*.bin publish_artifacts/openwrt-ath79-tiny-tplink_tl-wr940n-v6-squashfs-factory.bin || cp openwrt-build/bin/targets/ath79/tiny/*factory* publish_artifacts/ || true
-            cp openwrt-build/bin/targets/ath79/tiny/*sysupgrade*.bin publish_artifacts/openwrt-ath79-tiny-tplink_tl-wr940n-v6-squashfs-sysupgrade.bin || cp openwrt-build/bin/targets/ath79/tiny/*sysupgrade* publish_artifacts/ || true
-            # Generate the TFTP recovery image from the factory image
-            if [ -f publish_artifacts/openwrt-ath79-tiny-tplink_tl-wr940n-v6-squashfs-factory.bin ]; then
-              cp publish_artifacts/openwrt-ath79-tiny-tplink_tl-wr940n-v6-squashfs-factory.bin publish_artifacts/wr940nv6_tp_recovery.bin
+            if [ -d openwrt-build/bin/targets/ath79/tiny/ ]; then
+              cp openwrt-build/bin/targets/ath79/tiny/*factory*.bin publish_artifacts/openwrt-ath79-tiny-tplink_tl-wr940n-v6-squashfs-factory.bin 2>/dev/null || true
+              cp openwrt-build/bin/targets/ath79/tiny/*sysupgrade*.bin publish_artifacts/openwrt-ath79-tiny-tplink_tl-wr940n-v6-squashfs-sysupgrade.bin 2>/dev/null || true
+              
+              # Generate the TFTP recovery image from the factory image
+              if [ -f publish_artifacts/openwrt-ath79-tiny-tplink_tl-wr940n-v6-squashfs-factory.bin ]; then
+                cp publish_artifacts/openwrt-ath79-tiny-tplink_tl-wr940n-v6-squashfs-factory.bin publish_artifacts/wr940nv6_tp_recovery.bin
+              else
+                # Fallback: if named differently, copy any generated bin files
+                find openwrt-build/bin/targets/ath79/tiny/ -name "*.bin" -exec cp {} publish_artifacts/ \; || true
+              fi
+            else
+              echo "Error: Output directory openwrt-build/bin/targets/ath79/tiny/ not found!"
+              exit 1
             fi
           else
             # Default x86_64 or raspberrypi_4 files
             find openwrt-build/bin/targets/ -type f \
               \( -name "*sysupgrade*" -o -name "*combined*" -o -name "*factory*" \) \
-              -exec cp {} publish_artifacts/ \;
+              -exec cp {} publish_artifacts/ \; || true
           fi
+          
+          # Verify files exist in publish_artifacts
+          echo "=== Staged Artifacts in publish_artifacts/ ==="
+          ls -la publish_artifacts/
           
           # Generate SHA256 checksums and build info
           cd publish_artifacts
-          sha256sum * > sha256sums.txt
+          if [ "$(ls -A .)" ]; then
+            sha256sum * > sha256sums.txt || true
+          else
+            echo "Error: No firmware artifacts found in publish_artifacts! The build did not generate any images."
+            exit 1
+          fi
+          
           echo "Device: ${{ matrix.device }}" > build_info.txt
           echo "Build Date: $(date)" >> build_info.txt
           echo "Git Commit: ${{ github.sha }}" >> build_info.txt
           echo "Base: OpenWrt 23.05" >> build_info.txt
           echo "Generated SHA256 Checksums:"
-          cat sha256sums.txt
+          cat sha256sums.txt || true
 
       - name: Upload Build Artifacts to GitHub Run
         uses: actions/upload-artifact@v4
