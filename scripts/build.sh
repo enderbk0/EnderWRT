@@ -7,7 +7,7 @@
 set -euo pipefail
 
 # Configuration
-OPENWRT_VERSION="${OPENWRT_VERSION:-v23.05.3}"
+OPENWRT_VERSION="${OPENWRT_VERSION:-v21.02.7}"
 OPENWRT_REPO="https://github.com/openwrt/openwrt.git"
 BUILD_DIR="openwrt-build"
 TARGET_DEVICE="${1:-x86_64}" # Defaults to x86_64
@@ -95,10 +95,7 @@ if [ -f "$CONFIG_FILE" ]; then
     if [ "$TARGET_DEVICE" = "tplink_tl-wr940n-v6" ]; then
         cat <<EOF >> .config
 CONFIG_PACKAGE_luci-theme-ender=y
-CONFIG_PACKAGE_uhttpd=y
-CONFIG_PACKAGE_uhttpd-mod-ubus=y
-CONFIG_PACKAGE_luci-mod-admin-full=y
-CONFIG_PACKAGE_luci-app-firewall=y
+CONFIG_PACKAGE_luci=y
 EOF
     else
         cat <<EOF >> .config
