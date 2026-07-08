@@ -37,3 +37,9 @@ EnderWRT is designed as a **thin, patchless customization layer** on top of upst
 *   **Decision**: All custom packages and themes are added to a dedicated subfolder (`package/enderwrt/`) during the preparation phase.
 *   **Why**: Separates the feed structure from standard packages.
 *   **Benefit**: Keeps our development files completely segregated from the official OpenWrt feed codebase, permitting clean rebases.
+
+### 5. 4MB Flash Size Optimization Strategy
+*   **Decision**: We deselect heavy services like `opkg` (runtime package manager), PPPoE WAN drivers (`ppp`), and disable verbose kernel logs (`CONFIG_KERNEL_PRINTK`).
+*   **Why**: Under 4MB flash layout constraint, the firmware partition cannot exceed 3.75MB. Standard LuCI with wireless drivers is too large for this footprint.
+*   **Benefit**: Shrinks final SquashFS image size to fit safely inside the physical flash partition while retaining the responsive Material You web interface.
+
