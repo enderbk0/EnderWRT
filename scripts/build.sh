@@ -95,7 +95,10 @@ if [ -f "$CONFIG_FILE" ]; then
     if [ "$TARGET_DEVICE" = "tplink_tl-wr940n-v6" ]; then
         cat <<EOF >> .config
 CONFIG_PACKAGE_luci-theme-ender=y
-CONFIG_PACKAGE_luci-light=y
+CONFIG_PACKAGE_uhttpd=y
+CONFIG_PACKAGE_uhttpd-mod-ubus=y
+CONFIG_PACKAGE_luci-mod-admin-full=y
+CONFIG_PACKAGE_luci-app-firewall=y
 EOF
     else
         cat <<EOF >> .config
